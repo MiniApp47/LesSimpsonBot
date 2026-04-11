@@ -217,6 +217,12 @@ const appData = [
 
     // --- NAVIGATION ---
     function showPage(pageId) {
+
+           // 👇 AJOUT STRATÉGIQUE : Coupe toutes les vidéos instantanément au changement de page
+           document.querySelectorAll('video').forEach(video => {
+            video.pause();
+        });
+
         pages.forEach(p => p.classList.remove('active'));
         const page = document.getElementById(pageId);
         if (page) {
