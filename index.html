@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Les SimpSon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      :root {
+            /* Palette de couleurs */
+            --background-color: #1c1c1d;
+            --secondary-bg-color: #2c2c2e;
+            --tertiary-bg-color: #3a3a3c;
+            --text-color: #ffffff;
+            --hint-color: #8e8e93;
+            --accent-color: #00c7be;
+            --green-color: #34c759;
+            --red-color: #ff3b30;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overscroll-behavior-y: none;
+            /* FOND D'ÉCRAN */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Fondecran.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin-bottom: 8vh;
+        }
+
+        /* --- Barre de chargement --- */
+        .progress-container {
+            width: 100%;
+            background-color: var(--tertiary-bg-color);
+            border-radius: 10px;
+            margin-top: 20px;
+            height: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ffcc00a8, #001bc7);
+            border-radius: 10px;
+            transition: width 2.5s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 10px rgba(52, 199, 89, 0.5);
+        }
+
+        /* --- Structure générale des pages --- */
+        .page {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .page-header {
+            padding: 2vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(360deg, #2c2c2e0f, #ffcc008f);
+        }
+
+        .page-header .title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: Optima, sans-serif;
+        }
+
+        .close-button,
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--hint-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .page-content {
+            flex-grow: 1;
+            padding: 1.5vh;
+        }
+
+        /* --- Écran de chargement --- */
+        #page-loader {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+        }
+
+        #page-loader .loader-box {
+            background: #80808082;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid #ffee00a8;
+        }
+
+        #page-loader img {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        #page-loader .app-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: Verdana, sans-serif;
+        }
+
+        #page-loader .loading-text {
+            color: var(--hint-color);
+            margin-top: 10px;
+            font-family: American Typewriter, serif;
+        }
+
+        /* --- Page d'accueil --- */
+        .top-marquee {
+            background: linear-gradient(180deg, #ffcc00a6, #0438d945);
+    color: #f7c3cd;
+            padding: 8px 0;
+            overflow: hidden;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 19s linear infinite;
+        }
+
+        .marquee-content span {
+            display: inline-block;
+            padding-right: 200px;
+            white-space: nowrap;
+            font-size: 11px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+        }
+
+        #page-home .home-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 15px;
+            background: linear-gradient(#ffcc0075, transparent);
+            position: relative;
+            height: 9vh;
+        }
+
+        .home-logo {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            height: 12vh;
+            border-radius: 20%;
+            box-shadow: 0px 0px 10px 2px #ffcc00;
+        }
+
+        #page-home .cart-button {
+            background: var(--tertiary-bg-color);
+            border: none;
+            border-radius: 20%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 0px 10px 2px #ffcc00;
+        }
+
+        /* --- Filtres --- */
+        #quality-filter {
+            font-family: Copperplate;
+            height: 7vh;
+            font-size: 1.8vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, black, transparent);
+            border-radius: 10px;
+        }
+
+        #quality-filter option {
+            text-align: center;
+        }
+
+        select#farm-filter {
+            display: block !important;
+            width: 100%;
+        }
+
+        .filter-select-wrapper::after #farm-filer {
+            display: none;
+        }
+
+        /* --- Cartes & Grilles --- */
+        .category-card {
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .category-card img {
+            width: 95%;
+            height: 25vh;
+            object-fit: cover;
+            border-radius: 20px;
+            margin: auto;
+            display: block;
+        }
+
+        .cart-button .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #1c04f5;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        #page-home .filters {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-input-wrapper,
+        .filter-select-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--secondary-bg-color);
+            border-radius: 10px;
+            margin-top: 3vh;
+            justify-content: center;
+        }
+
+        .filter-select-wrapper::after {
+            content: '▾';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .filter-input-wrapper input,
+        .filter-select-wrapper select {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 50px;
+            padding-right: 40px;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1rem;
+            appearance: none;
+            -webkit-appearance: none;
+            border-radius: 0;
+            line-height: normal;
+            height: auto;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .filter-input-wrapper input::placeholder {
+            color: var(--hint-color);
+            opacity: 1;
+        }
+
+        .filter-input-wrapper svg,
+        .filter-select-wrapper svg {
+            position: absolute;
+            left: 3vh;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--hint-color);
+            margin-right: 3.5vh;
+            z-index: 2;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 25px;
+            padding: 0 15px 80px 15px;
+            margin-top: 3vh;
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, #ffcc00, #367ac0);
+    border: 1px solid #132bff;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .product-flag {
+            margin-left: 5px;
+            font-size: 3vh;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #2c2c2edb;
+            height: auto;
+            width: 35px;
+            border-radius: 20%;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .product-card .info {
+            padding: 10px;
+        }
+
+        .product-card .name {
+            font-weight: 500;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            height: 6vh;
+            text-align: center;
+            font-family: Marker Felt, fantasy;
+            font-size: 20px;
+            color: #ffcc00;
+        }
+
+        .product-card .farm {
+            color: #1c04f5;
+    font-size: 0.8rem;
+    text-align: center;
+    border-bottom: 1px solid #1c04f5;
+            margin-bottom: 5px;
+        }
+
+        .product-card .price {
+            text-align: end;
+            font-family: monospace;
+        }
+
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: var(--hint-color);
+            grid-column: 1 / -1;
+        }
+
+        /* Barre de navigation en bas */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background: #2c2c2ed9;
+            align-items: center;
+            padding: 10px 0;
+            z-index: 50;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #b5961e;
+    text-decoration: none;
+    font-size: 0.7rem;
+    background: #8080807d;
+    border-radius: 20px;
+    width: 10vh;
+    padding: 1vh;
+    border: none;
+    box-shadow: 0px 0px 10px 2px #1c04f5;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #ffcc00;
+            background-color: #0000009c;
+        }
+
+        .nav-item svg {
+            margin-bottom: 5px;
+        }
+
+        /* --- Page Produit & Détails --- */
+        #page-product .product-video {
+            width: 85%;
+            display: block;
+            margin: auto;
+            aspect-ratio: 9 / 16;
+            background: #000;
+        }
+
+        /* DETAILS PRODUIT (Optimisé & Fusionné) */
+        #page-product .product-details {
+            background: rgba(44, 44, 46, 0.85) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border-radius: 20px !important;
+            padding: 20px !important;
+            margin-top: 20px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-details .name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: Marker Felt, fantasy;
+            margin: 0;
+            color: #ffcc00;
+        }
+
+        .product-details .farm {
+            font-size: 1rem;
+            color: #1c04f5;
+            margin-bottom: 25px;
+        }
+
+        .tarifs-grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 90%;
+        }
+
+        .product-details .tarifs-title {
+            margin-top: 20px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-top: 1px solid var(--tertiary-bg-color);
+            padding-top: 20px;
+        }
+
+        .tarif-item {
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #ffcc00, #367ac0);
+    border: 1px solid #132bff;
+    color: #1c04f5;
+            width: 45%;
+            height: auto;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+
+        .box-tarif {
+            display: flex;
+            font-size: 25px;
+            justify-content: space-around;
+            font-family: Impact, fantasy;
+            flex-direction: column;
+            text-align: center;
+            width: 80%;
+            padding: 1vh;
+        }
+
+        .tarif-wieght, .tarif-price {
+            border-bottom: 1px solid grey;
+            padding: 1vh;
+        }
+
+        .add-to-cart-btn {
+            background: #1c04f5;
+    border: 2px solid #ffcc00;
+    border-radius: 8px;
+    color: #ffcc00;
+            width: 60%;
+            height: 35px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-description {
+            font-size: 0.95rem;
+            color: #1390ff;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            border-top: 1px solid var(--tertiary-bg-color);
+            padding-top: 20px;
+            white-space: pre-wrap;
+            text-align: center;
+            font-family: "Georgia", serif;
+        }
+
+        /* Page Panier & Confirmation */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--tertiary-bg-color);
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .cart-item .item-details {
+            flex-grow: 1;
+            background-color: #2c2c2ed9;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            border-radius: 20px;
+            font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            padding: 1vh;
+        }
+
+        .cart-item .name {
+            font-weight: 500;
+            font-family: cursive;
+            margin: 1vh 0;
+        }
+
+        .cart-item .price {
+            color: #ffcc00;
+            font-weight: 700;
+            margin-bottom: 1vh;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            background: var(--tertiary-bg-color);
+            border-radius: 8px;
+        }
+
+        .quantity-selector button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .quantity-selector .quantity {
+            padding: 0 10px;
+        }
+
+        .cart-summary {
+            background: #ffcc009e;
+    color: #000000;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            text-align: center;
+        }
+
+        #page-confirmation .cart-total,
+        #page-cart .cart-total {
+            background: var(--secondary-bg-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            font-family: Optima, sans-serif;
+        }
+        
+        #page-confirmation .cart-total { flex-direction: column; justify-content: space-between; }
+        #page-cart .cart-total { flex-direction: row; justify-content: space-between; }
+
+        .cart-actions {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 8vh;
+        }
+
+        .main-action-btn {
+            background: #ffcc00c7;
+            color: #1c04f5;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .secondary-action-btn {
+            background: var(--secondary-bg-color);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .main-action-btn:disabled,
+        .secondary-action-btn:disabled {
+            background: var(--tertiary-bg-color);
+            color: var(--hint-color);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- Notification Toast --- */
+        #notification-toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #ffcc0091;
+    color: #1c04f5;
+            text-align: center;
+            border-radius: 10px;
+            padding: 16px;
+            position: fixed;
+            z-index: 101;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: visibility 0.5s, opacity 0.5s, transform 0.5s;
+        }
+
+        #notification-toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
+        }
+
+        @keyframes fadeout {
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
+        }
+
+        /* --- Page Info / Contact --- */
+        #page-info .page-content,
+        #page-contact .page-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 1vh;
+        }
+
+        #page-info .contact-logo,
+        #page-contact .contact-logo {
+            height: 15vh;
+            width: 15vh;
+            margin-bottom: 6vh;
+            border-radius: 20px;
+            box-shadow: 0px 0px 10px 2px #ffcc00;
+            margin-top: 2vh;
+        }
+
+        #page-info .contact-card,
+        #page-contact .contact-card {
+            background: rgba(44, 44, 46, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0px 0px 10px 2px #ffcc00;
+            margin-top: 2vh;
+        }
+
+        .contact-links-list a {
+            align-items: center;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            height: 6vh;
+            display: flex;
+            justify-content: center;
+            font-size: 2.2vh;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .contact-links-list a:active { transform: scale(0.98); }
+
+        /* Couleurs Links */
+        .contact-link.snapchat { background: linear-gradient(45deg, #fff108 0%, #b93800 100%); color: black !important; }
+        .contact-link.snapchat svg { stroke: black !important; }
+        .contact-link.signal { background: linear-gradient(45deg, #3A9EFD 0%, #002860 100%); }
+        .contact-link.whatsapp { background: linear-gradient(45deg, #27ff78 0%, #0a7d00 100%); }
+        .contact-link.telegram { background: linear-gradient(45deg, #2a67ee 0%, #16e6d5 100%); color: black !important; }
+        .contact-link.secours { background: linear-gradient(45deg, #00d2ff 0%, #3a7bd5 100%); color: black !important; }
+        .contact-link.potato { background: linear-gradient(45deg, #7d1a03 0%, #f16101 100%); }
+        .contact-link.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: black !important; }
+
+        /* Accordéon Style */
+        .accordion-container { width: 100%; text-align: center; }
+        .accordion-item {
+            background: var(--secondary-bg-color);
+            border-radius: 15px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            border: 1px solid var(--tertiary-bg-color);
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            width: 100%;
+            background: #000;
+            border: 2px solid #ffcc00;
+            padding: 0;
+            cursor: pointer;
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .accordion-header .ImgReseaux {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 110%;
+            z-index: 1;
+            filter: brightness(0.85);
+            transition: transform 0.3s ease;
+        }
+        .accordion-item.active .ImgReseaux { transform: scale(1.05); filter: brightness(1); }
+        .accordion-header span { display: none; }
+
+        .accordion-arrow {
+            position: relative;
+            z-index: 2;
+            margin: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            padding: 5px;
+            width: 30px; height: 30px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        .accordion-item.active .accordion-arrow { transform: rotate(180deg); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            background: var(--tertiary-bg-color);
+        }
+        .accordion-content p {
+            padding: 15px;
+            margin: 0;
+            color: var(--hint-color);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .accordion-item.active .accordion-content { max-height: 1000px; padding-top: 0; }
+
+        /* Promos & Paiement */
+        .promo-container, .payment-selector {
+            margin-top: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--tertiary-bg-color);
+            display: none;
+        }
+        #promo-input-container { display: flex; gap: 10px; }
+        #promo-code-input { flex-grow: 1; padding: 15px; border: none; background: var(--secondary-bg-color); border-radius: 10px; color: var(--text-color); }
+        #apply-promo-btn { padding: 15px; flex-shrink: 0; }
+        #promo-applied-container { display: flex; justify-content: space-between; background: var(--tertiary-bg-color); padding: 15px; border-radius: 10px; color: var(--green-color); }
+        #remove-promo-btn { background: none; border: none; color: var(--red-color); font-size: 1.5rem; cursor: pointer; }
+
+        .payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .payment-btn { background: var(--secondary-bg-color); color: var(--hint-color); border: 2px solid var(--secondary-bg-color); padding: 15px; border-radius: 10px; cursor: pointer; }
+        .payment-btn.active { color: var(--text-color); border-color: #489fc9; background-color: var(--tertiary-bg-color); }
+
+        #confirmation-summary .summary-line.total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-top: 1px solid var(--tertiary-bg-color);
+            margin-top: 10px;
+            padding-top: 10px;
+            width: 80%;
+            text-align: center;
+        }
+        #confirmation-summary .summary-line.discount { color: var(--green-color); }
+
+        .product-item-card.unclickable img { opacity: 0.7; }
+
+        /* --- STYLE DES BOUTONS LISTE (FARMS) --- */
+        .farm-list-btn {
+            border: none;
+            outline: none;
+            padding: 20px;
+            background: linear-gradient(45deg, #ffcc00 0%, #ffcc00 80%, #005c30 100%, transparent);
+            background-size: 200% auto;
+            color: #ed9c27;
+            font-family: 'Impact', 'Copperplate', sans-serif;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+        }
+        .farm-list-btn:active { background-color: #3a3a3c; transform: scale(0.98); }
+        .farm-btn-left { display: flex; align-items: center; gap: 15px; }
+        .farm-btn-icon { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 1px solid #3a3a3c; }
+        .farm-btn-info { display: flex; flex-direction: column; }
+        .farm-btn-title { font-size: 25px; font-weight: 600; color: #83e18d; }
+        .farm-btn-subtitle { font-size: 0.8rem; color: #8e8e93; margin-top: 2px; }
+        .farm-btn-right svg { display: block; background-color: #661fef; height: 3vh; width: 3vh; border-radius: 5px; }
+
+        /* --- Galerie, Variantes & Carrousel --- */
+        .product-gallery-wrapper {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .product-gallery-wrapper::-webkit-scrollbar { display: none; }
+        .gallery-item { flex: 0 0 100%; scroll-snap-align: center; height: 350px; border-radius: 12px; overflow: hidden; background: #000; }
+        .gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-counter { text-align: center; color: #999999; font-size: 0.9rem; margin-top: -5px; margin-bottom: 10px; }
+
+        .variant-selector-container { margin-bottom: 20px; background: #252525; padding: 15px; border-radius: 12px; }
+        .variant-title { font-size: 0.95rem; color: #8e8e93; margin-bottom: 10px; font-weight: 600; }
+        .variant-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .variant-btn { background: #3a3a3c; border: 2px solid transparent; color: white; padding: 12px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .variant-btn .emoji { font-size: 1.2rem; }
+        .variant-btn.active { background: #fff; color: #000; border-color: #fff; transform: scale(0.98); }
+
+        /* Couleurs variantes */
+        .style-purple.active, .add-to-cart-btn.style-purple { background: #9d4edd !important; border-color: #9d4edd !important; color: white !important; box-shadow: 0 0 15px rgba(157, 78, 221, 0.4); }
+        .style-red.active, .add-to-cart-btn.style-red { background: #ef233c !important; border-color: #ef233c !important; color: white !important; box-shadow: 0 0 15px rgba(239, 35, 60, 0.4); }
+        .style-green.active, .add-to-cart-btn.style-green { background: #70e000 !important; border-color: #70e000 !important; color: black !important; box-shadow: 0 0 15px rgba(112, 224, 0, 0.4); }
+        .style-yellow.active, .add-to-cart-btn.style-yellow { background: #ffcc00 !important; border-color: #ffcc00 !important; color: black !important; box-shadow: 0 0 15px rgba(255, 204, 0, 0.4); }
+        .style-orange.active, .add-to-cart-btn.style-orange { background: #d17d00 !important; border-color: #d17d00 !important; color: white !important; box-shadow: 0 0 15px rgba(251, 133, 0, 0.4); }
+        .style-brown.active, .add-to-cart-btn.style-brown { background: #7f5539 !important; border-color: #7f5539 !important; color: white !important; box-shadow: 0 0 15px rgba(127, 85, 57, 0.4); }
+        .style-passion.active, .add-to-cart-btn.style-passion { background: #d17d00 !important; border-color: #d17d00 !important; color: white !important; box-shadow: 0 0 15px rgba(255, 0, 110, 0.5); }
+        .style-melon.active, .add-to-cart-btn.style-melon { background: #00b4d8 !important; border-color: #00b4d8 !important; color: white !important; box-shadow: 0 0 15px rgba(0, 180, 216, 0.5); }
+        .style-gmo.active, .add-to-cart-btn.style-gmo { background: #556b2f !important; border-color: #556b2f !important; color: white !important; box-shadow: 0 0 15px rgba(85, 107, 47, 0.6); }
+        .style-lampo.active, .add-to-cart-btn.style-lampo { background: #d90429 !important; border-color: #d90429 !important; color: white !important; box-shadow: 0 0 15px rgba(217, 4, 41, 0.6); }
+        .style-tangier.active, .add-to-cart-btn.style-tangier { background: #ff9f1c !important; border-color: #ff9f1c !important; color: black !important; box-shadow: 0 0 15px rgba(255, 159, 28, 0.6); }
+        .style-grappe.active, .add-to-cart-btn.style-grappe { background: #7209b7 !important; border-color: #7209b7 !important; color: white !important; box-shadow: 0 0 15px rgba(114, 9, 183, 0.6); }
+
+        .pack-content-container { width: 100%; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .pack-item-btn { background: #3a3a3c; color: white; padding: 12px 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 0.95rem; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .pack-item-btn:active { background: #505053; transform: scale(0.98); }
+        .pack-arrow { color: #8e8e93; font-size: 1.2rem; }
+        .product-card.full-width { grid-column: 1 / -1;background: linear-gradient(145deg, #2b00c7, #70e000);border: 1px solid #b713ff; }
+        .product-card.full-width img { height: 180px; }
+
+/* --- Page AVIS (Nouvelle Version Textuelle) --- */
+.avis-content { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding-bottom: 80px; 
+        }
+        
+        .page-title { 
+            margin-top: 20px; 
+            font-size: 1.5rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-family: Marker Felt, fantasy; 
+            color: var(--accent-color);
+        }
+        
+        .subtitle { 
+            color: #8e8e93; 
+            font-size: 0.9rem; 
+            margin-bottom: 25px; 
+            text-align: center;
+        }
+
+        .review-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        .review-card {
+            background: rgba(44, 44, 46, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 217, 15, 0.2); /* Bordure subtile Simpson */
+            border-radius: 15px;
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .review-card:active {
+            transform: scale(0.98);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+
+        .review-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-family: Optima, sans-serif;
+            text-transform: capitalize;
+        }
+
+        .review-stars {
+            color: var(--accent-color); /* Utilise le jaune */
+            font-size: 1rem;
+            text-shadow: 0 0 8px rgba(255, 217, 15, 0.6); /* Effet GLOW "sympa" */
+            letter-spacing: 2px;
+        }
+
+        .review-text {
+            font-size: 0.95rem;
+            color: #d1d1d6;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .review-text::before, .review-text::after {
+            content: '"';
+            color: var(--accent-color);
+            font-weight: 900;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        /* Modale Zoom */
+        .image-modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: #000000; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .modal-content { 
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; 
+            border-radius: 0; 
+        }
+
+        .close-modal { 
+            position: absolute; 
+            top: 20px; 
+            right: 30px; 
+            color: white; 
+            font-size: 40px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            z-index: 10000;
+        }    
+    </style>
+</head>
+
+<body>
+    <div id="page-contact" class="page">
+        <div class="page-content">
+            <img src="Logo.webp" alt="Logo" class="contact-logo">
+            <div class="contact-card">
+                <div id="contact-links-container" class="contact-links-list">
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div id="page-info" class="page">
+            <div class="page-content">
+                <img src="Logo.webp" alt="Logo" class="contact-logo">
+                <div class="contact-card">
+    
+                    <div class="accordion-container">
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <img src="InfoReseaux.png" class="ImgReseaux" alt="">
+                                <span>
+                                    </span>
+                                <svg class="accordion-arrow" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                                </svg>
+                            </button>
+                            <div class="accordion-content">
+                                <p style="padding-bottom: 5px;">
+                                    <a href="https://wa.me/33646227865" target="_blank" style="text-decoration: none; color: #25D366; display: block; padding-bottom: 15px;">
+                                        📲 <b>WHATSAPP</b> : Ligne directe pour vos commandes ⚡️
+                                    </a>
+                                    
+                                    <a href="https://t.me/lessimpson75" target="_blank" style="text-decoration: none; color: #2AABEE; display: block; padding-bottom: 15px;">
+                                        💎 <b>TELEGRAM / BOT</b> : Accès au menu complet et aux nouveautés 🤫
+                                    </a>
+                                    
+                                    <a href="https://snapchat.com/t/8KXH6etA" target="_blank" style="text-decoration: none; color: #FFD700; display: block;">
+                                        🎬 <b>SNAPCHAT</b> : Exclusivités, backstages et infos en temps réel 🔥
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+    
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <img src="InfoHoraire.png" class="ImgReseaux" alt="">
+                                <span>
+                                    </span>
+                                <svg class="accordion-arrow" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                                </svg>
+                            </button>
+                            <div class="accordion-content">
+                                <p>
+                                    ⏱️ <b>SERVICE 7J/7 : 12H - 00H</b> 🍩
+                                    <br><br>
+                                    📥 Prise de commande dès <b>10H00</b>.
+                                    <br><br>
+                                    🚀 Décollage des livraisons à <b>12H30</b> précises. <br>
+                                    <i>Organisation carrée, aucune attente inutile.</i>
+                                </p>
+                            </div>
+                        </div>
+    
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <img src="InfoLiv.png" class="ImgReseaux" alt="">
+                                <span>
+                                    </span>
+                                <svg class="accordion-arrow" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                                </svg>
+                            </button>
+                            <div class="accordion-content">
+                                <p>
+                                    🏎️ <b>LIVRAISON EXPRESS IDF</b> : <br>
+                                    Directement chez vous. Vitesse, discrétion et efficacité. 🥷
+                                    <br><br>
+                                    📦 <b>ENVOIS POSTAUX (FRANCE)</b> : <br>
+                                    Emballage furtif (double sous vide). <br>
+                                    Numéro de suivi inclus. Tranquillité d'esprit garantie. 🛡️
+                                </p>
+                            </div>
+                        </div>
+    
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <img src="InfoMeetUp.png" class="ImgReseaux" alt="">
+                                <span>
+                                    </span>
+                                <svg class="accordion-arrow" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                                </svg>
+                            </button>
+                            <div class="accordion-content">
+                                <p>
+                                    📍 <b>ZONES DE MEET-UP SÉCURISÉES :</b>
+                                    <br><br>
+                                    🔹 <b>75015</b> (Paris 15ème) <br>
+                                    🔹 <b>75014</b> (Paris 14ème) <br>
+                                    🔹 <b>78</b> (Yvelines)
+                                    <br><br>
+                                    🤫 <i>Point de rendez-vous exact transmis après validation. Mode furtif activé.</i>
+                                    <br><br>
+                                    🏆 <b>LES SIMPSON</b> : La qualité supérieure. Frappe validée. Discrétion totale. ✨
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <symbol id="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </symbol>
+            <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </symbol>
+            <symbol id="icon-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </symbol>
+            <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </symbol>
+            <symbol id="icon-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </symbol>
+            <symbol id="icon-contact" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                </path>
+            </symbol>
+            <symbol id="icon-quality" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                </polygon>
+            </symbol>
+            <symbol id="icon-farm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 9.5L9.5 4.5l-5 5L1 11l4.5 4.5 5-5 4.5-4.5z"></path>
+                <path d="M19.5 14.5L14.5 9.5l-5 5L1 21h8l4.5-4.5 5-5 4.5-4.5z"></path>
+            </symbol>
+            <symbol id="icon-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </symbol>
+            <symbol id="icon-telegram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 2 L11 13 L2 9 L22 2 Z M22 2 L15 22 L11 13 L2 9 L22 2 Z"></path>
+            </symbol>
+            <symbol id="icon-whatsapp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                </path>
+            </symbol>
+            <symbol id="icon-snapchat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 5.8 4.7 10.5 10.5 10.5S22.5 17.8 22.5 12c0-5.8-4.7-10.5-10.5-10.5zm-2.3 12.9c-.3 0-.6-.1-.8-.4-.5-.5-.5-1.3 0-1.8l3.1-3.1c.5-.5 1.3-.5 1.8 0 .5.5.5 1.3 0 1.8l-3.1 3.1c-.2.3-.5.4-.8.4z" />
+            </symbol>
+            <symbol id="icon-potato" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                <circle cx="10" cy="10" r="1.5" />
+                <circle cx="14" cy="14" r="1.5" />
+                <circle cx="14" cy="10" r="1.5" />
+                <circle cx="10" cy="14" r="1.5" />
+            </symbol>
+            <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </symbol>
+            <symbol id="icon-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path>
+            </symbol>
+        </defs>
+    </svg>
+
+    <div id="page-loader" class="page active">
+        <div class="loader-box">
+            <img src="Logo.webp" alt="Logo">
+            <div class="app-name">🍩 LES SIMPSON 🍩</div>
+            <div class="loading-text">Chargement de l'interface...</div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="myBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-home" class="page">
+        <div class="top-marquee">
+            <div class="marquee-content">
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+                <span>REJOIGNEZ NOS RÉSEAUX 📲</span>
+            </div>
+        </div>
+        <div class="home-header">
+            <img src="Logo.webp" alt="Logo" class="home-logo">
+            <button class="cart-button" id="home-cart-button">
+                <svg width="20" height="20">
+                    <use href="#icon-cart" />
+                </svg>
+                <span class="cart-count">0</span>
+            </button>
+        </div>
+
+        <div class="filters">
+            <div class="filter-input-wrapper" style="display:none ;">
+                <svg width="20" height="20">
+                    <use href="#icon-search" />
+                </svg>
+                <input type="text" id="search-filter" placeholder="Rechercher un produit...">
+            </div>
+            <div class="filter-select-wrapper">
+                <svg width="20" height="20">
+                    <use href="#icon-quality" />
+                </svg>
+                <select id="quality-filter"></select>
+            </div>
+            <div class="filter-select-wrapper" style="display:none ;">
+                <select id="farm-filter"></select>
+            </div>
+        </div>
+        <div id="product-list" class="product-grid">
+        </div>
+    </div>
+
+    <div id="page-product" class="page">
+        <div class="page-header">
+            <button class="back-button">‹</button>
+            <span class="title" id="product-page-title"></span>
+            <button class="close-button">×</button>
+        </div>
+        <div class="page-content">
+            <video class="product-video" poster="https://placehold.co/400x711/000000/ffffff?text=Video"
+                controls></video>
+            <div id="product-details-content" class="product-details">
+            </div>
+        </div>
+    </div>
+
+    <div id="page-cart" class="page">
+        <div class="page-header">
+            <span class="title">Mon Panier</span>
+            <button class="close-button">×</button>
+        </div>
+        <div class="page-content">
+            <div id="cart-items-container">
+            </div>
+        </div>
+        <div class="cart-actions">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">0.00€</span>
+            </div>
+            <button id="checkout-button" class="main-action-btn">Commander</button>
+            <button id="cart-continue-shopping" class="secondary-action-btn">Continuer les achats</button>
+        </div>
+    </div>
+
+    <div id="page-confirmation" class="page">
+        <div class="page-header">
+            <span class="title">Détails de votre commande</span>
+            <button class="close-button">×</button>
+        </div>
+        <div class="page-content">
+            <div class="cart-summary">
+                <span class="resume">🗓 Résumé de la commande</span>
+                <p>
+                    <span id="confirmation-items-count">0 article</span> <br>
+                    <span class="total">Total: <span id="confirmation-total-price">0.00€</span></span>
+                </p>
+            </div>
+            <h4>Détail des articles</h4>
+            <div id="confirmation-items-list">
+            </div>
+
+            <div class="promo-container">
+                <h4>Code Promo</h4>
+                <div id="promo-input-container">
+                    <input type="text" id="promo-code-input" placeholder="Votre code...">
+                    <button id="apply-promo-btn" class="secondary-action-btn">Appliquer</button>
+                </div>
+                <div id="promo-applied-container" style="display:none;">
+                    <span id="promo-applied-text"></span>
+                    <button id="remove-promo-btn">×</button>
+                </div>
+            </div>
+
+            <div class="payment-selector">
+                <h4>Paiement</h4>
+                <div class="payment-options">
+                    <button class="payment-btn active" data-method="Espèce">💵 Espèce</button>
+                    <button class="payment-btn" data-method="Crypto">₿ Crypto</button>
+                </div>
+            </div>
+
+            <div class="cart-total" id="confirmation-summary">
+            </div>
+        </div>
+        <div class="cart-actions">
+
+            <button id="confirmation-modify-order" class="secondary-action-btn">✏️ Modifier</button>
+
+            <button id="confirm-order-button" class="secondary-action-btn telegram-button" disabled>
+                <span></span>
+            </button>
+        </div>
+    </div>
+
+    <div id="page-avis" class="page">
+        <div class="page-content avis-content">
+            
+            <h2 class="page-title">ILS NOUS FONT CONFIANCE 🤝</h2>
+            <p class="subtitle">La voix de nos clients sur Springfield</p>
+    
+            <div class="review-container">
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Mathis</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Super lourd sa fait un moment qui gère, au top. Je recommande !</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Sofia</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Livraison rapide efficace, rien à dire 👍</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Laura</span>
+                        <span class="review-stars">⭐⭐⭐⭐☆</span>
+                    </div>
+                    <div class="review-text">Après une journée stressante rien de mieux que commandée des donuts</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Romain</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Franchement surpris par la qualité, je rachèterai. Client depuis plusieurs mois, toujours satisfait de la qualité.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Damien</span>
+                        <span class="review-stars">⭐⭐⭐☆☆</span>
+                    </div>
+                    <div class="review-text">Bon produit, effet un peu léger pour moi mais ça reste très correct.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Kevin</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">J’ai testé plusieurs personne et celui-ci est clairement dans le top du jamais vu sur Springfield.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Inès</span>
+                        <span class="review-stars">⭐⭐⭐⭐☆</span>
+                    </div>
+                    <div class="review-text">Produit conforme au photos je suis assez exigeant a la demande.. j’avoue que c’est du sérieux… 😧</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Julien</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Super découverte. J’avais déjà testé ailleurs mais ici la qualité est clairement au-dessus.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Benjamin</span>
+                        <span class="review-stars">⭐⭐⭐☆☆</span>
+                    </div>
+                    <div class="review-text">Correct pour le prix. J’ai déjà testé un peu mieux ailleurs mais ça fait le job.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Camille</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Cliente depuis 3 commandes maintenant, toujours aussi satisfait.. 😌</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Lucas</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Jamais eu de problème, livraison rapide à chaque fois, toujours agréable de passer par lui.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Mehdi</span>
+                        <span class="review-stars">⭐⭐⭐⭐☆</span>
+                    </div>
+                    <div class="review-text">Rien à dire sur le produit, juste la livraison qui a pris un peut plus de temps.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Sarah</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Commande reçue rapidement, packaging discret et soigné. Produit nickel bon grammage, je recommande sans hésiter.</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Manon</span>
+                        <span class="review-stars">⭐⭐⭐⭐☆</span>
+                    </div>
+                    <div class="review-text">Bon produit dans l’ensemble, goût agréable</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Karim</span>
+                        <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <div class="review-text">Rien à dire, livraison rapide et produit au top. Je recommande la californienne pour ceux hésitant</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">Hugo</span>
+                        <span class="review-stars">⭐⭐⭐⭐☆</span>
+                    </div>
+                    <div class="review-text">Bonne qualité, bien mieux que certains telegram testés avant. Je rachèterai sûrement.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="image-modal" class="image-modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="img-in-modal">
+    </div>
+
+
+    <div class="bottom-nav">
+        <button id="nav-menu" data-page="page-home" class="nav-item active">
+            <svg width="20" height="20">
+                <use href="#icon-home" />
+            </svg>
+            <p style="
+            margin: inherit;"> HOME </p>
+        </button>
+        <button id="nav-info" data-page="page-info" class="nav-item">
+            <svg width="20" height="20">
+                <use href="#icon-info" />
+            </svg>
+            <p style="margin: inherit;"> INFO </p>
+        </button>
+        <button id="nav-contact" data-page="page-contact" class="nav-item">
+            <svg width="20" height="20">
+                <use href="#icon-link" />
+            </svg>
+            <p style="
+            margin: inherit;"> LINKS </p>
+        </button>
+        <button id="nav-avis" data-page="page-avis" class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <p style="margin: inherit;"> AVIS </p>
+        </button>
+    </div>
+
+    <div id="notification-toast"></div>
+    <script src="script.js"></script>
+</body>
+
+</html>
