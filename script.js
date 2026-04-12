@@ -161,6 +161,31 @@ const appData = [
             }
         ]
     },
+    // 5. Edibles
+    {
+        id: 'Edibles',
+        name: 'Edibles 🍬',
+        type: 'Edibles 🍬',
+        quality: 'Edibles 🍬',
+        image: 'CategEdibles.png', 
+        products: [
+           /*  {
+                id: '🎂 WEDDING CAKE',
+                flag: '🇺🇸',
+                name: '🎂 WEDDING CAKE',
+                farm: 'BY LOS PEPES🏴‍☠️',
+                promoEligible: true,
+                type: 'Edibles',
+                image: 'ProductWC.png',
+                video: 'VideoWC.mov',
+                description: '⚠️ HASH DRY Sift by LOSPEPES🏴‍☠️ Provenance Maroc 🇲🇦\n\n Graine 🇺🇸\n HYBRIDE\n Triangle Kush X Animal Mints \n 🟢(60%Indica / 40% Sativa ) \n  👩‍🔬: 50/60%   \n\n EUPHORIE ✔️✔️✔️  \n\n CRÉATIF ✔️✔️✔️  \n\n RELAX✔️✔️✔️✔️  \n\n SOMMEIL✔️✔️✔️✔️\n\n Texture : Dur , crémeux \n Goût : Fruité, Vanille , Épicé \n\n  ⚠️ 🚨 A conserver au frais ou au congélo 🧊  \n Pour encore une meilleure mutation 🪺',
+                tarifs: [
+                    { weight: '5g', price: 50.00 },
+                    { weight: '10g', price: 100.00 }
+                ]
+            } */
+        ]
+    },
 
    
    
