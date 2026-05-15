@@ -186,6 +186,33 @@ const appData = [
             } */
         ]
     },
+    // 5. Edibles
+    {
+        id: 'Coca',
+        name: 'Coca ❄️',
+        type: 'Coca ❄️',
+        quality: 'Coca ❄️',
+        image: 'CategBl.png', 
+        products: [
+            {
+                id: 'Colombienne',
+                flag: '🇨🇴',
+                name: '🇨🇴 Colombienne',
+                farm: 'NO FARM 🇨🇴',
+                promoEligible: true,
+                type: 'Edibles',
+                image: 'ProductCo.jpg',
+                video: 'VideoCo.mp4',
+                description: '1G pile à la pesé \n\n ✨ Stimulation intense ✨ : Sensation d\'être plus alerte, énergique et d\'avoir des capacités physiques et cognitives accrues 🏂 \n ❄️ Euphorie et désinhibition ❄️ : Sentiment de bien-être intense et réduction des barrières sociales ou de la peur ☃️',
+                tarifs: [
+                    { weight: '1g', price: 80.00 },
+                    { weight: '2g', price: 160.00 },
+                    { weight: '5g', price: 350.00 },
+                    { weight: '10g', price: 500.00 }
+                ]
+            }
+        ]
+    },
 
    
    
