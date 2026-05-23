@@ -78,7 +78,7 @@ const appData = [
                 video: 'VideoMer.mov',
                 description: '(Wedding Cake X Animal Cookies) \n\n Meringue est un croisement de 2 variétés hybrides USA🇺🇸populaires. \n Elle penche un peu plus vers le côté  INDICA L\'effet est assez euphorique 😄avec un puissant sentiment de bien-être et de détente. Lorsque vous fumez 💨davantage pendant une courte période, vous apprécierez la sensation de relaxation corporelle profonde qui pourrait vous scotcher dans votre canapé. 🌿🌿',
                 tarifs: [
-                    { weight: '5g', price: 50.00 }
+                    { weight: '10g', price: 100.00 }
                 ]
             }
         ]
