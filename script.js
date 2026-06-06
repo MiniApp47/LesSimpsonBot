@@ -245,6 +245,20 @@ const appData = [
         quality: 'Edibles 🍬',
         image: 'CategEdibles.png', 
         products: [
+            {
+                id: 'Brownie THC 🧱',
+                flag: '🇺🇸',
+                name: 'Brownie THC 🧱',
+                farm: 'Boutiq',
+                promoEligible: false,
+                type: 'brownie',
+                image: 'ProductBr.jpg',
+                videos:['VideoBr.mov','VideoBr2.mov'],
+                description: 'Un brownie au THC (ou space cake) est un gâteau au chocolat classique dans lequel les graisses de la recette (beurre ou huile) ont été infusées avec du cannabis. Lors de l\'ingestion, le THC est transformé par le foie, produisant des effets psychoactifs souvent plus puissants et durables que lorsqu\'il est fumé.\n\n Durée des effets : L\'expérience est prolongée et peut durer de 4 à 8 heures (voire plus selon le dosage et le métabolisme)\n Effets ressentis : Sensation de forte relaxation, euphorie, modification de la perception sensorielle et fou rire.😂',
+                tarifs: [
+                    { weight: '1 Part', price: 10.00 },
+                ]
+            },
            /*  {
                 id: '🎂 WEDDING CAKE',
                 flag: '🇺🇸',
