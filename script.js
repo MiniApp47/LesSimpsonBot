@@ -67,6 +67,54 @@ const appData = [
         quality: '🇺🇸 Cali',
         image: 'CategCali.png', 
         products: [
+              {
+                id: 'TROPICANA CHERRY 🍒',
+                flag: '🇺🇸',
+                name: 'TROPICANA CHERRY 🍒',
+                farm: 'DidierSelection 🗽',
+                promoEligible: true,
+                type: 'Weed',
+                image: 'ProductTC.jpg',
+                images: ['ProductTC2.jpg'],
+                 videos: ['VideoTC.mov','VideoTC2.mov'],
+                description: 'Tropicana Cherry Strain est un hybride sativa-dominant vibrant et savoureux connu pour son goût fruité alléchant et ses effets édifiants et énergisants. Avec des notes audacieuses de cerise, d\'agrumes et d\'épices terreuses, cette variété est devenue un favori parmi les fumeurs de jour et les esprits créatifs. \n Tropicana Cherry ne brille pas seulement en goût, elle offre également un high clair qui aide à améliorer l\'humeur et la concentration tout en apaisant le corps sans sédation.\n 16/21% THC',
+                tarifs: [
+                    { weight: '10g', price: 100.00 },
+                    { weight: '25g', price: 210.00 }
+                ]
+            },
+            {
+                id: 'PAPAYA PUNCH 🥊',
+                flag: '🇺🇸',
+                name: 'PAPAYA PUNCH 🥊',
+                farm: 'DidierSelection 🗽',
+                promoEligible: true,
+                type: 'Weed',
+                image: 'ProductPP.jpg',
+                images: ['ProductPP2.jpg'],
+                 videos: ['VideoPP2.mov','VideoPP3.mov','VideoPP4.mov'],
+                description: 'Papaya Punch offre aux utilisateurs un high apaisant, parfait pour se détendre après une journée avec des amis ou une nuit tranquille à l\'intérieur. Papaya Punch a un arôme délicieux qui sent à la fois fruité et fromage, grâce aux terpènes dominants comme le caryophyllène et le linalol. \n La saveur est douce et fruitée, ce qui en fait une fleur savoureuse à rouler sans se soucier de se sentir trop défoncée ou racée. \n Si vous aimez ces variétés fruitées de milieu de route, Papaya Punch pourrait être votre nouveau favori.',
+                tarifs: [
+                    { weight: '10g', price: 100.00 },
+                    { weight: '25g', price: 210.00 }
+                ]
+            },
+            {
+                id: 'BAKLAVA 🧈🥐',
+                flag: '🇺🇸',
+                name: 'BAKLAVA 🧈🥐',
+                farm: 'DidierSelection 🗽',
+                promoEligible: true,
+                type: 'Weed',
+                image: 'ProductPRR.jpg',
+                images: ['ProductPRR.jpg'],
+                videos: ['VideoPRR.mov','VideoPRR2.mov','VideoPRR3.mov'],
+                description: 'Baklava contient 21 % de THC, ce qui fait de cette variété un choix idéal pour les consommateurs de cannabis expérimentés. Les clients de Leafly nous disent que les effets de Baklava comprennent la créativité, le picotement et l\'élévation. \n Les patients de marijuana médicale choisissent souvent le Baklava lorsqu\'ils font face à des symptômes associés à l\'anxiété, à la dépression et au stress',
+                tarifs: [
+                    { weight: '10g', price: 100.00 },
+                    { weight: '25g', price: 210.00 }
+                ]
+            },
            
              {
                 id: 'Purple Runtz',
@@ -284,6 +332,23 @@ const appData = [
         quality: 'Coca ❄️',
         image: 'CategBl.png', 
         products: [
+             {
+                id: 'Le Loup 🐺',
+                flag: '🇨🇴',
+                name: 'Le Loup 🐺',
+                farm: 'No Farm',
+                promoEligible: true,
+                type: 'Hash',
+                image: 'ProductLou.jpg',
+                images: ['ProductLou1.jpg'],
+                video: 'VideoLou.mp4',
+                description: '',
+                tarifs: [
+                    { weight: '2g', price: 160.00 },
+                    { weight: '5g', price: 350.00 },
+                    { weight: '10g', price: 500.00 }
+                ]
+            },
             {
                 id: 'Colombienne',
                 flag: '🇨🇴',
