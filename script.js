@@ -288,10 +288,45 @@ const appData = [
         image: 'CategMousseux.png', 
         products: [
              {
+                id: 'PABLO ESCOBAR 🇨🇴',
+                flag: '🇲🇦',
+                name: 'PABLO ESCOBAR 🇨🇴',
+                farm: 'LesSimsSelection 🗽',
+                promoEligible: true,
+                type: 'Hash',
+                image: 'ProductPE.jpg',
+                video: 'VideoPE.mov',
+                videos:['VideoPE2.mov'],
+                description: 'Une sélection premium de gamme coffee shop, appréciée pour sa régularité, sa texture agréable et son profil aromatique accessible.\n Origine : Maroc 🇲🇦\n Gamme : Coffee Shop\n Qualité : Premium\n Variété : Pablo Escobar\n Texture : Souple, mousseuse, homogène\n Arômes : Végétaux, résineux, légèrement sucrés, herbacés ',
+                tarifs: [
+                    { weight: '20g', price: 100.00 },
+                    { weight: '50g', price: 200.00 },
+                    { weight: '100g', price: 350.00 }
+                ]
+            },
+            {
+                id: 'PRINGLES 🍟',
+                flag: '🇲🇦',
+                name: 'PRINGLES 🍟',
+                farm: 'LesSimsSelection 🗽',
+                promoEligible: true,
+                type: 'Hash',
+                image: 'ProductPG.jpg',
+                images: ['ProductPG2.jpg'],
+                video: 'VideoPG.mov',
+                videos:['VideoPG2.mov'],
+                description: 'Extraction jaune mousseux d’origine marocaine, issue du profil PRINGLES 🐈reconnue pour sa texture légère et son profil aromatique équilibré.\n La texture est souple, mousseuse et homogène, facile à travailler. \n Elle développe des arômes végétaux et légèrement sucrés, accompagnés de noterésineuses avec une touche subtilement herbacée.',
+                tarifs: [
+                    { weight: '20g', price: 100.00 },
+                    { weight: '50g', price: 200.00 },
+                    { weight: '100g', price: 350.00 }
+                ]
+            },
+             {
                 id: 'HEADSET',
                 flag: '🇲🇦',
                 name: 'HEADSET 🤯',
-                farm: 'No Farm',
+                farm: 'LesSimsSelection 🗽',
                 promoEligible: true,
                 type: 'Hash',
                 image: 'ProductHS.png',
@@ -306,7 +341,7 @@ const appData = [
                 id: 'ultra Mousseux 🫧',
                 flag: '🇲🇦',
                 name: 'Ultra Mousseux 🫧',
-                farm: 'No Farm 🇲🇦',
+                farm: 'LesSimsSelection 🗽',
                 promoEligible: true,
                 type: 'Hash',
                 image: 'ProductUM.jpg',
@@ -328,6 +363,23 @@ const appData = [
         quality: '💎 Filtré',
         image: 'CategFiltre.png', 
         products: [
+              {
+                id: 'SNICKERS 🍫',
+                flag: '🇲🇦',
+                name: 'SNICKERS 🍫',
+                farm: 'LesSimsSelection 🗽',
+                promoEligible: true,
+                type: 'Filtre',
+                image: 'ProductS.jpg',
+                images: ['ProductS1.jpg','ProductS2.jpg'],
+                video: 'VideoS.mov',
+                videos:['VideoS1.mov','VideoS2.mov'],
+                description: '( Pain 🥖 de 50G) \n\n Extraction Static Sift d’origine marocaine, issue du profil OG Kush, reconnue pour sa pureté et son profil aromatique intense.\n La texture est fine, sèche et légèrement collante, caractéristique d’un static sift premium bien travaillé. \n Elle développe des arômes puissants et profonds, mêlant des notes terreuses, résineuses et légèrement épicées, avec une touche naturelle et authentique.',
+                tarifs: [
+                    { weight: '10g', price: 100.00 },
+                    { weight: '50g', price: 200.00 }
+                ]
+            },
              {
                 id: '🥶 FRESH FROZEN 🥶',
                 flag: '🇲🇦',
@@ -423,6 +475,24 @@ const appData = [
         image: 'CategBl.png', 
         products: [
              {
+                id: 'Colombienne',
+                flag: '🇨🇴',
+                name: 'Colombienne 🇨🇴',
+                farm: 'No Farm',
+                promoEligible: true,
+                type: 'Hash',
+                image: 'ProductCo.jpg',
+                images:['ProductCO2.jpg'],
+                video: 'VideoCo.mp4',
+                description: '',
+                tarifs: [
+                    { weight: '1g', price: 70.00 },
+                    { weight: '2g', price: 120.00 },
+                    { weight: '5g', price: 250.00 },
+                    { weight: '10g', price: 450.00 }
+                ]
+            },
+             {
                 id: 'Le Loup 🐺',
                 flag: '🇨🇴',
                 name: 'Le Loup 🐺',
@@ -439,23 +509,6 @@ const appData = [
                     { weight: '10g', price: 500.00 }
                 ]
             },
-            {
-                id: 'Colombienne',
-                flag: '🇨🇴',
-                name: '🇨🇴 Colombienne',
-                farm: 'NO FARM 🇨🇴',
-                promoEligible: true,
-                type: 'Edibles',
-                image: 'ProductCo.jpg',
-                video: 'VideoCo.mp4',
-                description: '1G pile à la pesé \n\n ✨ Stimulation intense ✨ : Sensation d\'être plus alerte, énergique et d\'avoir des capacités physiques et cognitives accrues 🏂 \n ❄️ Euphorie et désinhibition ❄️ : Sentiment de bien-être intense et réduction des barrières sociales ou de la peur ☃️',
-                tarifs: [
-                    { weight: '1g', price: 80.00 },
-                    { weight: '2g', price: 160.00 },
-                    { weight: '5g', price: 350.00 },
-                    { weight: '10g', price: 500.00 }
-                ]
-            }
         ]
     },
 
