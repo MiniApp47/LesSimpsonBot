@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         {
             name: 'WHATSAPP 📞',
-            url: 'https://wa.me/33646227865', // <-- TON NUMÉRO ICI
+            url: 'https://wa.me/33627399488', // <-- TON NUMÉRO ICI
             id: 'whatsapp',
             className: 'whatsapp', 
             text: "WHATSAPP 📞"
@@ -1374,7 +1374,7 @@ const appData = [
         }
 
         if (target.closest('#confirm-order-button')) {
-            const myPhoneNumber = '33646227865'; // <-- TON NUMÉRO ICI
+            const myPhoneNumber = '33627399488'; // <-- TON NUMÉRO ICI
             let message = formatOrderMessage();
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${encodedMessage}`;
